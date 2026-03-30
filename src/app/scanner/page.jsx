@@ -13,7 +13,7 @@ export default function ScannerPage() {
     setError(null);
     setResult(null);
     try {
-      const res = await fetch("http://localhost:5000/scan", {
+      const res = await fetch("https://shadowai-backend.onrender.com/scan", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text, source: "web" }),
@@ -22,7 +22,7 @@ export default function ScannerPage() {
       const data = await res.json();
       setResult(data.result);
     } catch (err) {
-      setError("تأكد أن السيرفر شغال على localhost:5000");
+      setError("حدث خطأ في الاتصال بسيرفر الفحص، يرجى المحاولة لاحقاً.");
     } finally {
       setLoading(false);
     }
