@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Link from "next/link";
 
 export default function ScannerPage() {
   const [text, setText] = useState("");
@@ -75,10 +76,14 @@ export default function ScannerPage() {
       <div className="max-w-3xl mx-auto">
         {/* Header */}
         <div className="text-center mb-10">
-          <h1 className="text-4xl font-bold mb-2">🛡️ ShadowAI Detector</h1>
+          <h1 className="text-4xl font-bold mb-2">🛡️</h1>
+          <h1 className="text-4xl font-bold mb-2">ShadowAI Detector</h1>
           <p className="text-gray-400 text-lg">
             افحص نصك قبل إرساله لأي أداة ذكاء اصطناعي
           </p>
+          <Link href="/" className="text-blue-400 hover:text-blue-300">
+            شاهد مقطع الفيديو{" "}
+          </Link>
         </div>
 
         {/* مربع الإدخال */}
@@ -243,6 +248,53 @@ export default function ScannerPage() {
           </div>
         )}
       </div>
+      <footer className="w-full py-4 mt-15 border-t border-gray-100 dark:border-gray-800 font-sans">
+        <div className="max-w-5xl mx-auto px-4 flex flex-col items-center gap-6">
+          {/* College Info Section */}
+          <div className="text-center group">
+            <h3 className="text-gray-700 dark:text-gray-300 font-bold text-sm md:text-base mb-1 tracking-wide transition-colors">
+              الكلية الجامعية للعلوم التطبيقية - UCAS
+            </h3>
+            <p className="text-gray-400 text-[10px] uppercase tracking-[0.2em]">
+              Gaza, Palestine
+            </p>
+          </div>
+
+          {/* Team Section */}
+          <div className="flex flex-col items-center gap-2">
+            <span className="text-xs font-semibold text-gray-400 uppercase tracking-widest">
+              Team Members
+            </span>
+            <div className="flex flex-wrap justify-center items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
+              <span className="px-3 py-1 bg-gray-50 dark:bg-gray-900 rounded-full border border-gray-100 dark:border-gray-800">
+                Olfat Medhat Al-Sakany
+              </span>
+              <span className="text-gray-300 hidden md:block">•</span>
+              <span className="px-3 py-1 bg-gray-50 dark:bg-gray-900 rounded-full border border-gray-100 dark:border-gray-800">
+                Tala Mohammed Al-Safadi
+              </span>
+            </div>
+          </div>
+
+          {/* Development Credit */}
+          <div className="flex flex-col items-center gap-4 pt-2 border-t border-gray-50 dark:border-gray-900 w-full max-w-xs">
+            <p className="text-xs text-gray-500">
+              Developed by{" "}
+              <a
+                href="https://github.com/Sfditala"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-500 font-semibold hover:text-blue-600 transition-colors duration-300 underline underline-offset-4"
+              >
+                Tala Al-Safadi
+              </a>
+            </p>
+            <p className="text-[10px] text-gray-400 font-mono">
+              © 2026 | All Rights Reserved
+            </p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
