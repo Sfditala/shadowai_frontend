@@ -67,6 +67,17 @@ export default function ScannerPage() {
     safe: "text-green-400",
   };
 
+  // ✨ ألوان وأيقونات طريقة الكشف
+  const methodStyles = {
+    regex: {
+      color: "text-blue-400",
+      icon: "⚡",
+      label: "Regex فقط — أسرع وأدق",
+    },
+    ml: { color: "text-purple-400", icon: "🧠", label: "ML فقط" },
+    "regex + ml": { color: "text-yellow-400", icon: "🔬", label: "Regex + ML" },
+  };
+
   const style = result
     ? riskStyles[result.risk_level] || riskStyles.safe
     : null;
@@ -74,19 +85,19 @@ export default function ScannerPage() {
   return (
     <div className="min-h-screen bg-gray-950 text-white p-6" dir="rtl">
       <div className="max-w-3xl mx-auto">
-        {/* Header */}
+        {/* ── Header ── */}
         <div className="text-center mb-10">
           <h1 className="text-4xl font-bold mb-2">🛡️</h1>
-          <h1 className="text-4xl font-bold mb-2">ShadowAI Detector</h1>
+          <h1 className="text-4xl font-bold mb-2"> ShadowAI Detector</h1>
           <p className="text-gray-400 text-lg">
             افحص نصك قبل إرساله لأي أداة ذكاء اصطناعي
           </p>
-          <Link href="/" className="text-blue-400 hover:text-blue-300">
-            شاهد مقطع الفيديو{" "}
+          <Link href="/" className="text-gray-600 text-xs hover:text-gray-400">
+            ← العودة للصفحة الرئيسية
           </Link>
         </div>
 
-        {/* مربع الإدخال */}
+        {/* ── مربع الإدخال ── */}
         <div className="bg-gray-900 rounded-2xl p-6 border border-gray-800 mb-4">
           <label className="block text-gray-400 mb-2 text-sm">
             الصق النص المراد فحصه
@@ -114,7 +125,7 @@ export default function ScannerPage() {
           </div>
         </div>
 
-        {/* زر الفحص */}
+        {/* ── زر الفحص ── */}
         <button
           onClick={handleScan}
           disabled={loading || !text.trim()}
@@ -123,21 +134,21 @@ export default function ScannerPage() {
           {loading ? "⏳ جاري الفحص..." : "🔍 فحص الآن"}
         </button>
 
-        {/* رسالة خطأ */}
+        {/* ── رسالة خطأ ── */}
         {error && (
           <div className="mt-4 bg-red-900/30 border border-red-700 rounded-xl p-4 text-red-400 text-sm">
             ⚠️ {error}
           </div>
         )}
 
-        {/* النتيجة */}
+        {/* ── النتيجة ── */}
         {result && (
           <div
             className={`mt-6 rounded-2xl border-2 ${style.border} overflow-hidden`}
           >
             {/* رأس النتيجة */}
             <div className={`${style.bg} ${style.text} p-5`}>
-              <div className="flex justify-between items-center">
+              <div className="flex justify-between items-start">
                 <div>
                   <p className="text-2xl font-bold">{result.risk_label_ar}</p>
                   <p className="text-sm opacity-80 mt-1">{result.message_ar}</p>
@@ -149,9 +160,46 @@ export default function ScannerPage() {
                   <p className="text-xs opacity-80">درجة الخطورة</p>
                 </div>
               </div>
+
+              {/* ✨ شريط المعلومات التقنية */}
+              <div className="flex gap-4 mt-3 pt-3 border-t border-white/20 flex-wrap">
+                {/* وقت الفحص */}
+                {result.scan_duration_ms !== undefined && (
+                  <div className="flex items-center gap-1 text-xs opacity-90">
+                    <span>⏱️</span>
+                    <span>
+                      {result.scan_duration_ms < 50
+                        ? `${result.scan_duration_ms}ms — فحص سريع`
+                        : `${result.scan_duration_ms}ms`}
+                    </span>
+                  </div>
+                )}
+
+                {/* طريقة الكشف */}
+                {result.detection_method &&
+                  (() => {
+                    const ms =
+                      methodStyles[result.detection_method] ||
+                      methodStyles["ml"];
+                    return (
+                      <div className="flex items-center gap-1 text-xs opacity-90">
+                        <span>{ms.icon}</span>
+                        <span>{ms.label}</span>
+                      </div>
+                    );
+                  })()}
+
+                {/* طول النص */}
+                {result.text_length !== undefined && (
+                  <div className="flex items-center gap-1 text-xs opacity-90">
+                    <span>📝</span>
+                    <span>{result.text_length} حرف</span>
+                  </div>
+                )}
+              </div>
             </div>
 
-            {/* المشاكل المكتشفة مع الـ snippet */}
+            {/* ✨ المشاكل المكتشفة مع الـ snippet ومعلومات البطاقة */}
             {result.detected.length > 0 && (
               <div className="bg-gray-900 p-5">
                 <p className="text-gray-400 text-sm mb-3 font-medium">
@@ -189,6 +237,84 @@ export default function ScannerPage() {
                           </code>
                         </div>
                       )}
+
+                      {/* ✨ تفاصيل البطاقة الائتمانية */}
+                      {item.card_analysis && (
+                        <div
+                          className={`mt-3 rounded-lg p-3 border text-xs ${
+                            item.card_analysis.is_test
+                              ? "bg-yellow-900/20 border-yellow-700/40"
+                              : item.card_analysis.is_valid
+                                ? "bg-red-900/30 border-red-700/40"
+                                : "bg-gray-800 border-gray-600"
+                          }`}
+                        >
+                          <p className="font-semibold mb-1 text-gray-300">
+                            🔬 تحليل البطاقة (Luhn Algorithm):
+                          </p>
+                          <div className="flex flex-wrap gap-3 text-gray-400">
+                            <span>
+                              نوع البطاقة:{" "}
+                              <span className="text-white font-medium">
+                                {item.card_analysis.card_type}
+                              </span>
+                            </span>
+                            <span>
+                              صالحة رياضياً:{" "}
+                              <span
+                                className={
+                                  item.card_analysis.is_valid
+                                    ? "text-green-400"
+                                    : "text-red-400"
+                                }
+                              >
+                                {item.card_analysis.is_valid
+                                  ? "✅ نعم"
+                                  : "❌ لا"}
+                              </span>
+                            </span>
+                            <span>
+                              بطاقة تيست:{" "}
+                              <span
+                                className={
+                                  item.card_analysis.is_test
+                                    ? "text-yellow-400"
+                                    : "text-red-400"
+                                }
+                              >
+                                {item.card_analysis.is_test
+                                  ? "🧪 نعم"
+                                  : "⚠️ قد تكون حقيقية"}
+                              </span>
+                            </span>
+                          </div>
+                          {item.card_analysis.is_valid &&
+                            !item.card_analysis.is_test && (
+                              <p className="mt-2 text-red-400 font-semibold">
+                                ⚠️ هذه البطاقة تجتاز فحص Luhn وليست من بطاقات
+                                التيست المعروفة — قد تكون حقيقية!
+                              </p>
+                            )}
+                          {item.card_analysis.is_test && (
+                            <p className="mt-2 text-yellow-400">
+                              🧪 بطاقة تيست/اختبار — آمنة للنشر لكن احذف أي
+                              بيانات حساسة مجاورة
+                            </p>
+                          )}
+                        </div>
+                      )}
+
+                      {/* ✨ تفاصيل الهاتف الدولي */}
+                      {item.country && (
+                        <div className="mt-2 bg-blue-900/20 border border-blue-700/40 rounded-lg p-2 text-xs">
+                          <span className="text-blue-400">
+                            🌍 الدولة المكتشفة من المقدمة:{" "}
+                            <span className="font-semibold text-white">
+                              {item.country}
+                            </span>
+                          </span>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -211,7 +337,7 @@ export default function ScannerPage() {
           </div>
         )}
 
-        {/* أمثلة سريعة */}
+        {/* ── أمثلة سريعة ── */}
         {!result && (
           <div className="mt-8">
             <p className="text-gray-600 text-sm mb-3 text-center">
@@ -220,18 +346,33 @@ export default function ScannerPage() {
             <div className="grid grid-cols-1 gap-2">
               {[
                 {
-                  label: "🔴 بطاقة ائتمان",
-                  text: "رقم بطاقتي هو 4532015112830366 تاريخ انتهاء 12/26",
+                  label: "🔴 بطاقة حقيقية (Luhn)",
+                  text: "رقم بطاقتي Visa هو 4916123456789012 تاريخ انتهاء 12/27",
+                },
+                {
+                  label: "🧪 بطاقة تيست (Stripe)",
+                  text: "بطاقة التيست هي 4242424242424242 cvv 123",
                 },
                 {
                   label: "🔴 كلمة مرور",
                   text: "password=MySecret123 للدخول على السيرفر",
                 },
                 {
+                  label: "🌍 هاتف دولي",
+                  text: "تواصل معي على +970591234567 أو 00966501234567",
+                },
+                {
+                  label: "📍 عنوان سكن",
+                  text: "أسكن في رام الله شارع النزهة بناء 5",
+                },
+                {
                   label: "🟠 قاعدة بيانات",
                   text: "mongodb://admin:pass123@localhost:27017/mydb",
                 },
-                { label: "🟢 سؤال عادي", text: "كيف أكتب حلقة for في Python؟" },
+                {
+                  label: "🟢 سؤال عادي",
+                  text: "كيف أكتب حلقة for في Python؟",
+                },
               ].map((example, i) => (
                 <button
                   key={i}
@@ -240,7 +381,7 @@ export default function ScannerPage() {
                 >
                   <span className="font-medium">{example.label}</span>
                   <span className="text-gray-600 mr-2 text-xs">
-                    {example.text.slice(0, 40)}...
+                    {example.text.slice(0, 45)}...
                   </span>
                 </button>
               ))}
@@ -248,6 +389,7 @@ export default function ScannerPage() {
           </div>
         )}
       </div>
+
       <footer className="w-full py-4 mt-15 border-t border-gray-100 dark:border-gray-800 font-sans">
         <div className="max-w-5xl mx-auto px-4 flex flex-col items-center gap-6">
           {/* College Info Section */}
