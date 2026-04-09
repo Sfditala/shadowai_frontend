@@ -92,8 +92,11 @@ export default function ScannerPage() {
           <p className="text-gray-400 text-lg">
             افحص نصك قبل إرساله لأي أداة ذكاء اصطناعي
           </p>
-          <Link href="/" className="text-gray-600 text-xs hover:text-gray-400">
-            ← العودة للصفحة الرئيسية
+          <Link
+            href="https://youtu.be/yosQcaPaYt0"
+            className="text-gray-600 text-xs hover:text-gray-400"
+          >
+            ← شاهد الفيديو لمعلومات اكثر
           </Link>
         </div>
 
